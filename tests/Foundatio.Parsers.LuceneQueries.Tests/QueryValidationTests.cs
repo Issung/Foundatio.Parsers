@@ -63,14 +63,11 @@ namespace Foundatio.Parsers.LuceneQueries.Tests {
             return true;
         }
 
-        /// <summary>
-        /// These values are expected to be found as invalid by the parser, but they are not, the parser returns valid.
-        /// But when they are sent off to ES they throw 500 errors, so it is expected that something is wrong with the parser.
-        /// </summary>
-        [InlineData("/abc", false)]     // A Regex sequence is started and left unterminated.
-        [InlineData("xy/z", false)]     // Same as above.
-        [InlineData("quik~2c", false)]  // Not sure what is wrong here, but if you put a space after the 2 then it works, probably proximity operator.
-        [InlineData("ab~2z", false)]    // Same as above.
+        [InlineData("hello/world", false)]      // A Regex sequence is started and left unterminated, this should be found as invalid.
+        [InlineData("hello/world/", true)]      // Valid use of the regex operator, should be found as valid.
+        [InlineData("hello\\/world", true)]     // An escaped regex character which should be taken literally, this should be found as valid.
+        [InlineData("hello~2world", false)]     // Proximity operator should only have numbers, and then a space before more content, this should be found as invalid.
+        [InlineData("hello~2 world", true)]     // Example of valid use of the proximity operator, should be found as valid.
         [Theory]
         public async Task TestUnescapedQuotesQueryValidAsync(string query, bool validityExpectation) {
             bool isValid = await QueryValidationTests.CheckQueryIsValidAsync(query);
