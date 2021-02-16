@@ -69,7 +69,7 @@ namespace Foundatio.Parsers.LuceneQueries.Tests {
         [InlineData("hello~2world", false)]     // Proximity operator should only have numbers, and then a space before more content, this should be found as invalid.
         [InlineData("hello~2 world", true)]     // Example of valid use of the proximity operator, should be found as valid.
         [Theory]
-        public async Task TestUnescapedQuotesQueryValidAsync(string query, bool validityExpectation) {
+        public async Task TestQueryStringValidAsync(string query, bool validityExpectation) {
             bool isValid = await QueryValidationTests.CheckQueryIsValidAsync(query);
 
             if (isValid != validityExpectation) {
